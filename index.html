@@ -1,54 +1,84 @@
-  <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title> 플라워스터디는 "도서출판 수풀미디어"에서 관리되며, 잠시 휴식 중입니다. 가까운 시일내에 다시 만나요. </title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css"/>
+  <title>플라워스터디는 "도서출판 수풀미디어"에서 관리됩니다.</title>
   <style>
     body {
       margin: 0;
       padding: 0;
-      font-family: sans-serif;
       background: #f5f5f5;
-    }
-    .swiper {
-      width: 100vw;
+      font-family: sans-serif;
+      overflow-x: hidden;
       height: 100vh;
-    }
-    .swiper-slide {
       display: flex;
-      flex-direction: column;
-      align-items: center;
       justify-content: center;
-      padding: 20px;
+      align-items: center;
     }
-    .swiper-slide img {
+
+    .carousel-container {
+      perspective: 1400px;
+      width: 100vw;
+      max-width: 1000px;
+      height: 100vh;
+      position: relative;
+    }
+
+    .carousel {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform-style: preserve-3d;
+      transform: translate(-50%, -50%) rotateY(0deg);
+      transition: transform 1s;
+    }
+
+    .book {
       width: 220px;
-      height: 300px;
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+      height: 320px;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform-style: preserve-3d;
+      transition: transform 0.5s;
+      transform-origin: center;
       cursor: pointer;
     }
+
+    .book img {
+      width: 100%;
+      height: 100%;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+
     .modal {
       display: none;
       position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0,0,0,0.7);
       z-index: 1000;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background-color: rgba(0, 0, 0, 0.7);
       overflow-y: auto;
     }
+
     .modal-content {
-      background: white;
+      background: #fff;
       margin: 5% auto;
       padding: 20px;
       max-width: 700px;
       border-radius: 10px;
     }
+
     .modal-content iframe,
     .modal-content img.detail-image {
       width: 100%;
+      border-radius: 8px;
       margin-bottom: 10px;
     }
+
     .modal-close {
       position: absolute;
       top: 10px;
@@ -60,13 +90,8 @@
   </style>
 </head>
 <body>
-  <div class="swiper">
-    <div class="swiper-wrapper">
-      <!-- Slides will be injected here by JS -->
-    </div>
-    <!-- Swiper navigation -->
-    <div class="swiper-button-next"></div>
-    <div class="swiper-button-prev"></div>
+  <div class="carousel-container">
+    <div class="carousel" id="carousel"></div>
   </div>
 
   <div class="modal" id="bookModal">
@@ -79,9 +104,8 @@
     </div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
   <script>
-    const books = [
+      const books = [
       {
         title: "2025 화훼장식기능사 필기&실기",
         desc: "필기×실기×미니북 구성의 수험서. CBT 모의고사 포함!",
@@ -139,55 +163,60 @@
       }
     ];
 
-    const wrapper = document.querySelector('.swiper-wrapper');
-    books.forEach(book => {
-      const slide = document.createElement('div');
-      slide.className = 'swiper-slide';
-      slide.innerHTML = `<img src="${book.img}" alt="${book.title}" data-title="${book.title}" data-desc="${book.desc}" data-video="${book.video || ''}" data-details='${JSON.stringify(book.details || [])}' />`;
-      wrapper.appendChild(slide);
+    const carousel = document.getElementById('carousel');
+    const angle = 360 / books.length;
+    let currRotate = 0;
+
+    books.forEach((book, i) => {
+      const el = document.createElement('div');
+      el.className = 'book';
+      el.style.transform = `rotateY(${i * angle}deg) translateZ(500px)`;
+
+      el.setAttribute('data-title', book.title);
+      el.setAttribute('data-desc', book.desc);
+      el.setAttribute('data-img', book.img);
+      if (book.video) el.setAttribute('data-video', book.video);
+      if (book.details) el.setAttribute('data-details', JSON.stringify(book.details));
+
+      el.innerHTML = `<img src="${book.img}" alt="${book.title}" />`;
+      el.addEventListener('click', openModal);
+      carousel.appendChild(el);
     });
 
-    const swiper = new Swiper('.swiper', {
-      slidesPerView: 1,
-      spaceBetween: 30,
-      navigation: {
-        nextEl: '.swiper-button-next',
-        prevEl: '.swiper-button-prev',
-      },
-      breakpoints: {
-        768: {
-          slidesPerView: 2
-        },
-        1024: {
-          slidesPerView: 3
-        }
+    function rotate(dir) {
+      currRotate += dir * angle;
+      carousel.style.transform = `translate(-50%, -50%) rotateY(${currRotate}deg)`;
+    }
+
+    let autoRotate = setInterval(() => rotate(1), 3000);
+
+    function openModal(e) {
+      const book = e.currentTarget;
+      const img = book.getAttribute('data-img');
+      const title = book.getAttribute('data-title');
+      const desc = book.getAttribute('data-desc');
+      const video = book.getAttribute('data-video');
+      const details = JSON.parse(book.getAttribute('data-details') || '[]');
+
+      document.getElementById('modalTitle').textContent = title;
+      document.getElementById('modalDesc').textContent = desc;
+      const modalMedia = document.getElementById('modalMedia');
+      const modalImages = document.getElementById('modalImages');
+      modalMedia.innerHTML = '';
+      modalImages.innerHTML = '';
+
+      if (video) {
+        modalMedia.innerHTML = `<iframe src="${video}" frameborder="0" allowfullscreen></iframe>`;
+      } else {
+        modalMedia.innerHTML = `<img src="${img}" class="detail-image" />`;
       }
-    });
 
-    document.querySelectorAll('.swiper-slide img').forEach(img => {
-      img.addEventListener('click', e => {
-        const el = e.target;
-        document.getElementById('modalTitle').textContent = el.dataset.title;
-        document.getElementById('modalDesc').textContent = el.dataset.desc;
-        const modalMedia = document.getElementById('modalMedia');
-        const modalImages = document.getElementById('modalImages');
-        modalMedia.innerHTML = '';
-        modalImages.innerHTML = '';
-
-        if (el.dataset.video) {
-          modalMedia.innerHTML = `<iframe src="${el.dataset.video}" frameborder="0" allowfullscreen></iframe>`;
-        } else {
-          modalMedia.innerHTML = `<img src="${el.src}" class="detail-image" />`;
-        }
-
-        const details = JSON.parse(el.dataset.details || '[]');
-        details.forEach(url => {
-          modalImages.innerHTML += `<img src="${url}" class="detail-image" />`;
-        });
-
-        document.getElementById('bookModal').style.display = 'block';
+      details.forEach(url => {
+        modalImages.innerHTML += `<img src="${url}" class="detail-image" />`;
       });
-    });
+
+      document.getElementById('bookModal').style.display = 'block';
+    }
 
     function closeModal() {
       document.getElementById('bookModal').style.display = 'none';
