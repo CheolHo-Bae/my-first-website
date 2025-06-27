@@ -1,256 +1,197 @@
-<!DOCTYPE html>
+  <!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
   <title> 플라워스터디는 "도서출판 수풀미디어"에서 관리되며, 잠시 휴식 중입니다. 가까운 시일내에 다시 만나요. </title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css"/>
   <style>
     body {
-      font-family: 'Arial', sans-serif;
-      background: #f2f2f2;
       margin: 0;
-      padding: 60px 20px;
-      overflow-x: hidden;
+      padding: 0;
+      font-family: sans-serif;
+      background: #f5f5f5;
     }
-
-    .carousel-container {
-      perspective: 1200px;
-      width: 100%;
-      max-width: 1000px;
-      margin: auto;
-      position: relative;
-      height: 300px;
+    .swiper {
+      width: 100vw;
+      height: 100vh;
     }
-
-    .carousel {
-      width: 100%;
-      height: 100%;
-      position: absolute;
-      transform-style: preserve-3d;
-      transition: transform 1s;
-    }
-
-    .book {
-      width: 180px;
-      height: 250px;
-      position: absolute;
-      top: 25px;
-      left: calc(50% - 90px);
-      transform-style: preserve-3d;
-      transition: transform 0.3s;
-      cursor: pointer;
-    }
-
-    .book img {
-      width: 100%;
-      height: 100%;
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-    }
-
-    .book:hover img {
-      animation: spin 1s linear;
-    }
-
-    .play-button {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: rgba(0,0,0,0.6);
-      color: white;
-      border: none;
-      border-radius: 50%;
-      width: 50px;
-      height: 50px;
-      font-size: 20px;
+    .swiper-slide {
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      z-index: 1;
-      pointer-events: none;
+      padding: 20px;
     }
-
-    .nav-btn {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      background-color: #fff;
-      border: 1px solid #ccc;
-      border-radius: 50%;
-      width: 40px;
-      height: 40px;
+    .swiper-slide img {
+      width: 220px;
+      height: 300px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
       cursor: pointer;
-      font-size: 20px;
-      font-weight: bold;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     }
-
-    .nav-btn:hover {
-      background-color: #eee;
-    }
-
-    .prev-btn { left: 10px; }
-    .next-btn { right: 10px; }
-
     .modal {
       display: none;
       position: fixed;
-      z-index: 9999;
-      left: 0; top: 0;
-      width: 100%; height: 100%;
-      background-color: rgba(0,0,0,0.6);
+      z-index: 1000;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
       overflow-y: auto;
     }
-
     .modal-content {
-      background-color: #fff;
+      background: white;
       margin: 5% auto;
       padding: 20px;
+      max-width: 700px;
       border-radius: 10px;
-      max-width: 600px;
-      text-align: center;
-      position: relative;
     }
-
     .modal-content iframe,
     .modal-content img.detail-image {
       width: 100%;
-      border-radius: 8px;
       margin-bottom: 10px;
     }
-
-    .close {
+    .modal-close {
       position: absolute;
       top: 10px;
-      right: 14px;
-      font-size: 28px;
-      font-weight: bold;
+      right: 20px;
+      font-size: 30px;
+      color: #fff;
       cursor: pointer;
     }
   </style>
 </head>
 <body>
-
-<div class="carousel-container">
-  <div class="carousel" id="carousel"></div>
-  <button class="nav-btn prev-btn" onclick="rotateCarousel(-1)">&lt;</button>
-  <button class="nav-btn next-btn" onclick="rotateCarousel(1)">&gt;</button>
-</div>
-
-<!-- 모달창 -->
-<div class="modal" id="bookModal">
-  <div class="modal-content">
-    <span class="close" onclick="closeModal()">&times;</span>
-    <div id="modalMedia"></div>
-    <h2 id="modalTitle">제목</h2>
-    <p id="modalDesc">설명</p>
-    <div id="modalImages"></div>
+  <div class="swiper">
+    <div class="swiper-wrapper">
+      <!-- Slides will be injected here by JS -->
+    </div>
+    <!-- Swiper navigation -->
+    <div class="swiper-button-next"></div>
+    <div class="swiper-button-prev"></div>
   </div>
-</div>
 
-<script>
-const books = [
-  {
-    title: "2025 화훼장식기능사 필기&실기",
-    desc: "필기×실기×미니북 구성의 수험서. CBT 모의고사 포함!",
-    img: "https://cheolho-bae.github.io/my-first-website/images/k_ps_1.jpg"
-  },
-  {
-    title: "2025 화훼장식기능사 필기 합격보장 (영상)",
-    desc: "필기×미니북 구성 수험서. 유튜브 영상 수록!",
-    img: "https://cheolho-bae.github.io/my-first-website/images/k_p_1.jpg",
-    video: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-    details: [
-      "https://cheolho-bae.github.io/my-first-website/images/k_ps_1.jpg",
-      "https://cheolho-bae.github.io/my-first-website/images/k_ps_1_intro.jpg"
-    ]
-  },
-  {
-    title: "Peony 카드",
-    desc: "수풀미디어의 감성 일러스트 카드. 40종 이상 구성",
-    img: "https://cheolho-bae.github.io/my-first-website/images/card.jpg"
-  },
-  {
-    title: "2025 화훼장식기능사 필기",
-    desc: "Ncs 8개 과목별 출제 빈도 분석 제시",
-    img: "https://cheolho-bae.github.io/my-first-website/images/k_ps_pre(1).jpg"
-  },
-  {
-    title: "2025 화훼장식기능사 필기",
-    desc: "단원별 핵심이론을 보기좋게 편집한 구성",
-    img: "https://cheolho-bae.github.io/my-first-website/images/k_ps_pre(2).jpg"
-  },
-  {
-    title: "2025 화훼장식기능사 필기",
-    desc: "풍부한 사진과 일러스트 제공",
-    img: "https://cheolho-bae.github.io/my-first-website/images/k_ps_pre(11).jpg"
-  }
-];
+  <div class="modal" id="bookModal">
+    <span class="modal-close" onclick="closeModal()">&times;</span>
+    <div class="modal-content">
+      <div id="modalMedia"></div>
+      <h2 id="modalTitle"></h2>
+      <p id="modalDesc"></p>
+      <div id="modalImages"></div>
+    </div>
+  </div>
 
-const carousel = document.getElementById('carousel');
-const angle = 360 / books.length;
-let currRotate = 0;
+  <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+  <script>
+    const books = [
+      {
+        title: "2025 화훼장식기능사 필기&실기",
+        desc: "필기×실기×미니북 구성의 수험서. CBT 모의고사 포함!",
+        img: "https://cheolho-bae.github.io/my-first-website/images/k_ps_1.jpg"
+      },
+      {
+        title: "2025 화훼장식기능사 필기 합격보장 (영상)",
+        desc: "필기×미니북 구성 수험서. 유튜브 영상 수록!",
+        img: "https://cheolho-bae.github.io/my-first-website/images/k_p_1.jpg",
+        video: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        details: [
+          "https://cheolho-bae.github.io/my-first-website/images/k_ps_1.jpg",
+          "https://cheolho-bae.github.io/my-first-website/images/k_ps_1_intro.jpg"
+        ]
+      },
+      {
+        title: "Peony 카드",
+        desc: "수풀미디어의 감성 일러스트 카드. 40종 이상 구성",
+        img: "https://cheolho-bae.github.io/my-first-website/images/card.jpg"
+      },
+      {
+        title: "2025 화훼장식기능사 필기",
+        desc: "Ncs 8개 과목별 출제 빈도 분석 제시",
+        img: "https://cheolho-bae.github.io/my-first-website/images/k_ps_pre(1).jpg"
+      },
+      {
+        title: "2025 화훼장식기능사 필기",
+        desc: "단원별 핵심이론을 보기좋게 편집한 구성",
+        img: "https://cheolho-bae.github.io/my-first-website/images/k_ps_pre(2).jpg"
+      },
+      {
+        title: "2025 화훼장식기능사 필기",
+        desc: "풍부한 사진과 일러스트 제공",
+        img: "https://cheolho-bae.github.io/my-first-website/images/k_ps_pre(11).jpg"
+      },
+      {
+        title: "2025 화훼장식기능사 필기",
+        desc: "풍부한 사진과 일러스트 제공",
+        img: "https://cheolho-bae.github.io/my-first-website/images/k_ps_pre(12).jpg"
+      },
+      {
+        title: "2025 화훼장식기능사 필기",
+        desc: "풍부한 사진과 일러스트 제공",
+        img: "https://cheolho-bae.github.io/my-first-website/images/k_ps_pre(13).jpg"
+      },
+      {
+        title: "2025 화훼장식기능사 필기",
+        desc: "단원별 출제예상문제 제공",
+        img: "https://cheolho-bae.github.io/my-first-website/images/k_ps_pre(14).jpg"
+      },
+      {
+        title: "2025 화훼장식기능사 필기",
+        desc: "매년 필기시험 분석 및 개정, 최다 출제 문제 수록",
+        img: "https://cheolho-bae.github.io/my-first-website/images/k_ps_pre(15).jpg"
+      }
+    ];
 
-books.forEach((book, index) => {
-  const el = document.createElement('div');
-  el.className = 'book';
-  el.style.transform = `rotateY(${index * angle}deg) translateZ(400px)`;
-
-  el.setAttribute('data-title', book.title);
-  el.setAttribute('data-desc', book.desc);
-  el.setAttribute('data-img', book.img);
-  if (book.video) el.setAttribute('data-video', book.video);
-  if (book.details) el.setAttribute('data-details', JSON.stringify(book.details));
-
-  el.innerHTML = `<img src="${book.img}" alt="${book.title}" />`;
-  if (book.video) {
-    const playBtn = document.createElement('div');
-    playBtn.className = 'play-button';
-    playBtn.innerHTML = '&#9658;';
-    el.appendChild(playBtn);
-  }
-
-  carousel.appendChild(el);
-});
-
-function rotateCarousel(dir) {
-  currRotate += dir * angle;
-  carousel.style.transform = `rotateY(${currRotate}deg)`;
-}
-
-carousel.addEventListener('click', (e) => {
-  const book = e.target.closest('.book');
-  if (book) {
-    const img = book.getAttribute('data-img');
-    const title = book.getAttribute('data-title');
-    const desc = book.getAttribute('data-desc');
-    const video = book.getAttribute('data-video');
-    const details = JSON.parse(book.getAttribute('data-details') || '[]');
-
-    document.getElementById('modalTitle').textContent = title;
-    document.getElementById('modalDesc').textContent = desc;
-    const modalMedia = document.getElementById('modalMedia');
-    const modalImages = document.getElementById('modalImages');
-    modalImages.innerHTML = '';
-
-    if (video) {
-      modalMedia.innerHTML = `<iframe src="${video}" frameborder="0" allowfullscreen></iframe>`;
-    } else {
-      modalMedia.innerHTML = `<img src="${img}" alt="${title}" class="detail-image" />`;
-    }
-
-    details.forEach(url => {
-      modalImages.innerHTML += `<img src="${url}" class="detail-image" alt="세부 이미지" />`;
+    const wrapper = document.querySelector('.swiper-wrapper');
+    books.forEach(book => {
+      const slide = document.createElement('div');
+      slide.className = 'swiper-slide';
+      slide.innerHTML = `<img src="${book.img}" alt="${book.title}" data-title="${book.title}" data-desc="${book.desc}" data-video="${book.video || ''}" data-details='${JSON.stringify(book.details || [])}' />`;
+      wrapper.appendChild(slide);
     });
 
-    document.getElementById('bookModal').style.display = 'block';
-  }
-});
+    const swiper = new Swiper('.swiper', {
+      slidesPerView: 1,
+      spaceBetween: 30,
+      navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev',
+      },
+      breakpoints: {
+        768: {
+          slidesPerView: 2
+        },
+        1024: {
+          slidesPerView: 3
+        }
+      }
+    });
 
-function closeModal() {
-  document.getElementById('bookModal').style.display = 'none';
-}
-</script>
+    document.querySelectorAll('.swiper-slide img').forEach(img => {
+      img.addEventListener('click', e => {
+        const el = e.target;
+        document.getElementById('modalTitle').textContent = el.dataset.title;
+        document.getElementById('modalDesc').textContent = el.dataset.desc;
+        const modalMedia = document.getElementById('modalMedia');
+        const modalImages = document.getElementById('modalImages');
+        modalMedia.innerHTML = '';
+        modalImages.innerHTML = '';
 
+        if (el.dataset.video) {
+          modalMedia.innerHTML = `<iframe src="${el.dataset.video}" frameborder="0" allowfullscreen></iframe>`;
+        } else {
+          modalMedia.innerHTML = `<img src="${el.src}" class="detail-image" />`;
+        }
+
+        const details = JSON.parse(el.dataset.details || '[]');
+        details.forEach(url => {
+          modalImages.innerHTML += `<img src="${url}" class="detail-image" />`;
+        });
+
+        document.getElementById('bookModal').style.display = 'block';
+      });
+    });
+
+    function closeModal() {
+      document.getElementById('bookModal').style.display = 'none';
+    }
+  </script>
 </body>
 </html>
