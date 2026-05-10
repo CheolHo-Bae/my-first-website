@@ -30,7 +30,7 @@
       left: 50%;
       transform-style: preserve-3d;
       /*  중앙 정렬을 위해 translate(-50%, -50%)를 기본으로 설정 */
-      transform: translateX(-50%, -50%) rotateY(0deg);
+      transform: translate(-50%, -50%) rotateY(0deg);
       transition: transform 1s;
 }    .book {
       width: 220px;
@@ -243,7 +243,7 @@ function rotate(dir) {
     function rotate(dir) {
       currRotate += dir * angle;
       // top: 20px 설정을 유지하기 위해 translateY 값은 0으로 설정
-      carousel.style.transform = `translateX(-50%, -50%) rotateY(${currRotate}deg)`;
+      carousel.style.transform = `translate(-50%, -50%) rotateY(${currRotate}deg)`;
     }
     let autoRotate = setInterval(() => rotate(-1), 2500);
     function openModal(e) {
