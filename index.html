@@ -138,14 +138,7 @@ function rotate(dir) {
   // top: 20px 설정을 유지하기 위해 translateY 값은 0으로 설정
   carousel.style.transform = `translate(-50%, -50%) rotateY(${currRotate}deg)`;
 }   
-          // 버튼 클릭 시 호출되는 수동 조작 함수
-    function manualRotate(dir) {
-      clearInterval(autoRotate); // 자동 멈춤
-      rotate(dir); // 수동 회전
-      startAuto(); // 다시 자동 시작
-    }
-
-    
+             
     
       const books = [
       {
