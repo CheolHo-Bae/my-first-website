@@ -28,12 +28,13 @@
       width: 100%;
       height: 100%;
       position: absolute;
-      top: 50%;
+      top: 20px; /* 50%에서 20px로 변경 */
       left: 50%;
       transform-style: preserve-3d;
-      transform: translate(-50%, -50%) rotateY(0deg);
+      /* translate의 두 번째 인자(-50%)를 0으로 변경 */
+      transform: translate(-50%, 0) rotateY(0deg); 
       transition: transform 1s;
-    }
+}
 
     .book {
       width: 220px;
