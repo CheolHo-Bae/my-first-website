@@ -22,6 +22,12 @@
       max-width: 1000px;
       height: 100vh;
       position: relative;
+      <div class="carousel-container">
+        <div class="carousel" id="carousel"></div>
+  
+        <button class="nav-btn prev" onclick="manualRotate(-1)">&#10094;</button>
+        <button class="nav-btn next" onclick="manualRotate(1)">&#10095;</button>
+      </div>
     }
 
     .carousel {
@@ -88,6 +94,25 @@
       color: #fff;
       cursor: pointer;
     }
+      /*=======================================추가한부분 */
+      /* 조작 버튼 스타일 */
+      .nav-btn {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(0, 0, 0, 0.3);
+        color: white;
+        border: none;
+        padding: 20px 15px;
+        cursor: pointer;
+        font-size: 30px;
+        border-radius: 5px;
+        z-index: 100;
+        transition: background 0.3s;
+      }
+      .nav-btn:hover { background: rgba(0, 0, 0, 0.7); }
+      .prev { left: 20px; }  /* 왼쪽 버튼 */
+      .next { right: 20px; } /* 오른쪽 버튼 */
   </style>
 </head>
 <body>
@@ -106,6 +131,28 @@
   </div>
 
   <script>
+    /*=======================================추가한부분 */
+      // 사용자가 버튼을 눌러 직접 회전시킬 때 사용
+      function manualRotate(dir) {
+      // 1. 일단 자동 회전을 멈춤 (방해되지 않게)
+        clearInterval(autoRotate);
+        
+        // 2. 원하는 방향으로 회전
+        rotate(dir);
+        
+        // 3. 5초 후에 다시 자동 회전 시작 (선택 사항)
+        autoRotate = setInterval(() => rotate(1), 3000);
+      }
+
+// 기존 rotate 함수 수정 (좌표 유지 확인)
+function rotate(dir) {
+  currRotate += dir * angle;
+  // top: 20px 설정을 유지하기 위해 translateY 값은 0으로 설정
+  carousel.style.transform = `translateX(-50%) rotateY(${currRotate}deg)`;
+}
+      
+    
+    
       const books = [
       {
         title: "2026 화훼장식기능사 필기&실기",
@@ -208,10 +255,18 @@
       el.addEventListener('click', openModal);
       carousel.appendChild(el);
     });
-
+/*=======================================기존프로그램부분 
     function rotate(dir) {
       currRotate += dir * angle;
       carousel.style.transform = `translate(-50%, -50%) rotateY(${currRotate}deg)`;
+    } */
+      
+    /*=======================================내용 수정한분 */
+    // 기존 rotate 함수 수정 (좌표 유지 확인)
+    function rotate(dir) {
+      currRotate += dir * angle;
+      // top: 20px 설정을 유지하기 위해 translateY 값은 0으로 설정
+      carousel.style.transform = `translateX(-50%) rotateY(${currRotate}deg)`;
     }
 
     let autoRotate = setInterval(() => rotate(-1), 2500);
