@@ -15,24 +15,28 @@
       justify-content: center;
       align-items: center;
     }
+
     .carousel-container {
       perspective: 1400px;
       width: 100vw;
       max-width: 1000px;
       height: 100vh;
       position: relative;
-      }
+    }
+
     .carousel {
       width: 100%;
       height: 100%;
       position: absolute;
-      top: 50%; /* 50%에서 300px로 변경하면 위에서 떨어지는 간격을 조절할 수 있지만, 해보니 별로 맘에 안듬 모니터와 모바일 세로, 가로 상태에서 모두 다르게 표현되어 그냥 중앙으로 유지 */
+      top: 50%; /* 50%에서 300px로 변경 */
       left: 50%;
       transform-style: preserve-3d;
-      /*  중앙 정렬을 위해 translate(-50%, -50%)를 기본으로 설정 */
-      transform: translate(-50%, -50%) rotateY(0deg);
+      /* translate의 두 번째 인자(-50%)를 0으로 변경 */
+      transform: translateX(-50%) rotateY(0deg);
       transition: transform 1s;
-}    .book {
+}
+
+    .book {
       width: 220px;
       height: 320px;
       position: absolute;
@@ -42,15 +46,15 @@
       transition: transform 0.5s;
       transform-origin: center;
       cursor: pointer;
-    margin-left: -110px; /* 너비(220px)의 절반 */
-    margin-top: -160px;  /* 높이(320px)의 절반 */
     }
+
     .book img {
       width: 100%;
       height: 100%;
       border-radius: 10px;
       box-shadow: 0 4px 15px rgba(0,0,0,0.2);
     }
+
     .modal {
       display: none;
       position: fixed;
@@ -60,6 +64,7 @@
       z-index: 1000;
       overflow-y: auto;
     }
+
     .modal-content {
       background: #fff;
       margin: 5% auto;
@@ -67,12 +72,14 @@
       max-width: 700px;
       border-radius: 10px;
     }
+
     .modal-content iframe,
     .modal-content img.detail-image {
       width: 100%;
       border-radius: 8px;
       margin-bottom: 10px;
     }
+
     .modal-close {
       position: absolute;
       top: 10px;
@@ -81,34 +88,13 @@
       color: #fff;
       cursor: pointer;
     }
-      /*=======================================추가한부분 */
-      /* 조작 버튼 스타일 */
-      .nav-btn {
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-        background: rgba(0, 0, 0, 0.3);
-        color: white;
-        border: none;
-        padding: 20px 15px;
-        cursor: pointer;
-        font-size: 30px;
-        border-radius: 5px;
-        z-index: 100;
-        transition: background 0.3s;
-      }
-      .nav-btn:hover { background: rgba(0, 0, 0, 0.7); }
-      .prev { left: 20px; }  /* 왼쪽 버튼 */
-      .next { right: 20px; } /* 오른쪽 버튼 */
   </style>
 </head>
 <body>
   <div class="carousel-container">
     <div class="carousel" id="carousel"></div>
-    
-    <button class="nav-btn prev" onclick="manualRotate(-1)">&#10094;</button>
-    <button class="nav-btn next" onclick="manualRotate(1)">&#10095;</button>
   </div>
+
   <div class="modal" id="bookModal">
     <span class="modal-close" onclick="closeModal()">&times;</span>
     <div class="modal-content">
@@ -118,29 +104,29 @@
       <div id="modalImages"></div>
     </div>
   </div>
-    
+
   <script>
-    /*=======================================추가한부분 */
-      // 사용자가 버튼을 눌러 직접 회전시킬 때 사용
-      function manualRotate(dir) {
-      // 1. 일단 자동 회전을 멈춤 (방해되지 않게)
-        clearInterval(autoRotate);
-        
-        // 2. 원하는 방향으로 회전
-        rotate(dir);
-        
-        // 3. 5초 후에 다시 자동 회전 시작 (선택 사항)
-        autoRotate = setInterval(() => rotate(-1), 2500);
-      }
-// 기존 rotate 함수 수정 (좌표 유지 확인)
-function rotate(dir) {
-  currRotate += dir * angle;
-  // top: 20px 설정을 유지하기 위해 translateY 값은 0으로 설정
-  carousel.style.transform = `translate(-50%, -50%) rotateY(${currRotate}deg)`;
-}   
-             
-    
       const books = [
+      {
+        title: "2026 화훼장식기사 필기&실기",
+        desc: "기출문제 분석으로 단기간 학습가능, 필기×실기 구성의 수험서",
+        img: "https://cheolho-bae.github.io/my-first-website/images/kisa_ps_1.jpg",
+        video: "https://www.youtube.com/watch?v=sH7Ipy7LnBc",
+        details: [
+          "https://cheolho-bae.github.io/my-first-website/images/kisa_ps_1.jpg",
+          "https://cheolho-bae.github.io/my-first-website/images/kisa_ps_1_intro.jpg"
+        ]
+      },
+      {
+        title: "2026 화훼장식산업기사 필기&실기",
+        desc: "필기×실기 구성의 수험서. CBT 모의고사 포함!",
+        img: "https://cheolho-bae.github.io/my-first-website/images/sank_ps_1.jpg",
+        video: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        details: [
+          "https://cheolho-bae.github.io/my-first-website/images/sank_ps_1.jpg",
+          "https://cheolho-bae.github.io/my-first-website/images/sank_ps_1_intro.jpg"
+        ]
+      },
       {
         title: "2026 화훼장식기능사 필기&실기",
         desc: "필기×실기×미니북 구성의 수험서. CBT 모의고사 포함!",
@@ -160,6 +146,11 @@ function rotate(dir) {
           "https://cheolho-bae.github.io/my-first-website/images/k_p_1.jpg",
           "https://cheolho-bae.github.io/my-first-website/images/k_p_1_intro.jpg"
         ]
+      },
+      {
+        title: "Peony 카드",
+        desc: "수풀미디어의 감성 일러스트 카드. 40종 이상 구성",
+        img: "https://cheolho-bae.github.io/my-first-website/images/card.jpg"
       },
       {
         title: "2026 화훼장식기능사 필기&실기+미니북",
@@ -195,59 +186,36 @@ function rotate(dir) {
         title: "2026 화훼장식기능사 필기&실기+미니북",
         desc: "매년 필기시험 분석 및 개정, 최다 출제 문제 수록",
         img: "https://cheolho-bae.github.io/my-first-website/images/k_ps_pre(15).jpg"
-      },
-      {
-        title: "2026 화훼장식기사 필기&실기",
-        desc: "기출문제 분석으로 단기간 학습가능, 필기×실기 구성의 수험서",
-        img: "https://cheolho-bae.github.io/my-first-website/images/kisa_ps_1.jpg",
-        video: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-        details: [
-          "https://cheolho-bae.github.io/my-first-website/images/kisa_ps_1.jpg",
-          "https://cheolho-bae.github.io/my-first-website/images/kisa_ps_1_intro.jpg"
-        ]
-      },
-      {
-        title: "2026 화훼장식산업기사 필기&실기",
-        desc: "필기×실기 구성의 수험서. CBT 모의고사 포함!",
-        img: "https://cheolho-bae.github.io/my-first-website/images/sank_ps_1.jpg",
-        video: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-        details: [
-          "https://cheolho-bae.github.io/my-first-website/images/sank_ps_1.jpg",
-          "https://cheolho-bae.github.io/my-first-website/images/sank_ps_1_intro.jpg"
-        ]
-      },
-      {
-        title: "Peony 카드",
-        desc: "수풀미디어의 감성 일러스트 카드. 40종 이상 구성",
-        img: "https://cheolho-bae.github.io/my-first-website/images/card.jpg"
       }
-      ];
+    ];
+
     const carousel = document.getElementById('carousel');
     const angle = 360 / books.length;
     let currRotate = 0;
-    let autoRotate; // 변수 먼저 선언
+
     books.forEach((book, i) => {
       const el = document.createElement('div');
       el.className = 'book';
       el.style.transform = `rotateY(${i * angle}deg) translateZ(500px)`;
+
       el.setAttribute('data-title', book.title);
       el.setAttribute('data-desc', book.desc);
       el.setAttribute('data-img', book.img);
       if (book.video) el.setAttribute('data-video', book.video);
       if (book.details) el.setAttribute('data-details', JSON.stringify(book.details));
+
       el.innerHTML = `<img src="${book.img}" alt="${book.title}" />`;
       el.addEventListener('click', openModal);
       carousel.appendChild(el);
     });
-      
-    /*=======================================내용 수정한분 */
-    // 기존 rotate 함수 수정 (좌표 유지 확인)
+
     function rotate(dir) {
-      currRotate += dir * angle;
-      // top: 20px 설정을 유지하기 위해 translateY 값은 0으로 설정
+      currRotate -= dir * angle;
       carousel.style.transform = `translate(-50%, -50%) rotateY(${currRotate}deg)`;
     }
-    autoRotate = setInterval(() => rotate(-1), 2500);
+
+    let autoRotate = setInterval(() => rotate(-1), 3000);
+
     function openModal(e) {
       const book = e.currentTarget;
       const img = book.getAttribute('data-img');
@@ -255,42 +223,45 @@ function rotate(dir) {
       const desc = book.getAttribute('data-desc');
       const video = book.getAttribute('data-video');
       const details = JSON.parse(book.getAttribute('data-details') || '[]');
+
       document.getElementById('modalTitle').textContent = title;
       document.getElementById('modalDesc').textContent = desc;
       const modalMedia = document.getElementById('modalMedia');
       const modalImages = document.getElementById('modalImages');
       modalMedia.innerHTML = '';
       modalImages.innerHTML = '';
+
       if (video) {
         modalMedia.innerHTML = `<iframe src="${video}" frameborder="0" allowfullscreen></iframe>`;
       } else {
         modalMedia.innerHTML = `<img src="${img}" class="detail-image" />`;
       }
+
       details.forEach(url => {
         modalImages.innerHTML += `<img src="${url}" class="detail-image" />`;
       });
+
       document.getElementById('bookModal').style.display = 'block';
     }
+
     function closeModal() {
       document.getElementById('bookModal').style.display = 'none';
-      document.getElementById('modalMedia').innerHTML = ''; // 영상 정지
-    }
-  
-      // ESC 키 누르면 모달 닫기
-      window.onkeydown = function(event) {
-        if (event.key === "Escape") {
-          closeModal();
-        }
-      };
-      
-      // 모달 바깥쪽(바탕화면) 클릭 시 닫기
-      window.onclick = function(event) {
-      const modal = document.getElementById('bookModal');
-      // 클릭한 대상이 모달창의 흰색 컨텐츠가 아니라 어두운 배경(modal 자체)일 때만 닫음
-      if (event.target == modal) {
-        closeModal();
-        }
-      }
-    </script>
+    }
+  </script>
+// ESC 키 누르면 모달 닫기
+window.onkeydown = function(event) {
+  if (event.key === "Escape") {
+    closeModal();
+  }
+};
+    // 모달 바깥쪽(바탕화면) 클릭 시 닫기
+window.onclick = function(event) {
+  const modal = document.getElementById('bookModal');
+  // 클릭한 대상이 모달창의 흰색 컨텐츠가 아니라 어두운 배경(modal 자체)일 때만 닫음
+  if (event.target == modal) {
+    closeModal();
+  }
+}
+    
 </body>
 </html>
