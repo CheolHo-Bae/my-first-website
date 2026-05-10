@@ -252,7 +252,7 @@ function rotate(dir) {
       // top: 20px 설정을 유지하기 위해 translateY 값은 0으로 설정
       carousel.style.transform = `translate(-50%, -50%) rotateY(${currRotate}deg)`;
     }
-    let autoRotate = setInterval(() => rotate(-1), 2500);
+    autoRotate = setInterval(() => rotate(-1), 2500);
     function openModal(e) {
       const book = e.currentTarget;
       const img = book.getAttribute('data-img');
