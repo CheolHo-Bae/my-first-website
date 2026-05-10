@@ -246,6 +246,20 @@
 
     function closeModal() {
       document.getElementById('bookModal').style.display = 'none';
+      // ESC 키 누르면 모달 닫기
+      window.onkeydown = function(event) {
+        if (event.key === "Escape") {
+          closeModal();
+        }
+      };
+      // 모달 바깥쪽(바탕화면) 클릭 시 닫기
+      window.onclick = function(event) {
+      const modal = document.getElementById('bookModal');
+      // 클릭한 대상이 모달창의 흰색 컨텐츠가 아니라 어두운 배경(modal 자체)일 때만 닫음
+      if (event.target == modal) {
+        closeModal();
+        }
+      }
     }
   </script>
 </body>
